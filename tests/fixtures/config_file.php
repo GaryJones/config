@@ -13,12 +13,18 @@ namespace BrightNucleus\Config;
 
 $test_data = [
 
-	'random_string'    => 'test_value',
-	'positive_integer' => 42,
-	'negative_integer' => -256,
-	'positive_boolean' => true,
-	'negative_boolean' => false,
-
+    'random_string'    => 'test_value',
+    'positive_integer' => 42,
+    'negative_integer' => -256,
+    'positive_boolean' => true,
+    'negative_boolean' => false,
+    'nested'           => [
+        'level2' => [
+            'level3' => [
+                'nested_value' => 512,
+            ],
+        ],
+    ],
 ];
 
 return $test_data;

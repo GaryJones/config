@@ -27,21 +27,23 @@ class ConfigSchema extends AbstractConfigSchema
     /**
      * The key that is used in the schema to define a default value.
      */
-    const DEFAULT_VALUE = 'default';
+    protected $default_key = '__default';
     /**
      * The key that is used in the schema to define a required value.
      */
-    const REQUIRED_KEY = 'required';
+    protected $required_key = '__required';
 
     /**
      * Instantiate a ConfigSchema object.
      *
      * @since 0.1.0
      *
-     * @param ConfigInterface|array $schema The schema to parse.
+     * @param ConfigInterface|array $schema       The schema to parse.
+     * @param string|null           $required_key Key that is used to define a required value.
+     * @param string|null           $default_key  Key that is used to define a default value.
      * @throws InvalidArgumentException
      */
-    public function __construct($schema)
+    public function __construct($schema, $required_key = null, $default_key = null)
     {
         if ($schema instanceof ConfigInterface) {
             $schema = $schema->getArrayCopy();
@@ -56,6 +58,14 @@ class ConfigSchema extends AbstractConfigSchema
             );
         }
 
+        if ($required_key) {
+            $this->required_key = $required_key;
+        }
+
+        if ($default_key) {
+            $this->default_key = $default_key;
+        }
+
         array_walk($schema, [$this, 'parseSchema']);
     }
 
@@ -64,25 +74,38 @@ class ConfigSchema extends AbstractConfigSchema
      *
      * @since 0.1.0
      *
-     * @param mixed  $data The data associated with the key.
+     * @param mixed  $elements The data associated with the key.
      * @param string $key  The key of the schema data.
+     * @param
      */
-    protected function parseSchema($data, $key)
+    protected function parseSchema($elements, $key, $parent)
     {
         $this->parseDefined($key);
 
-        if (array_key_exists(self::REQUIRED_KEY, $data)) {
-            $this->parseRequired(
-                $key,
-                $data[self::REQUIRED_KEY]
-            );
+        if (! is_array($elements)) {
+            return;
         }
 
-        if (array_key_exists(self::DEFAULT_VALUE, $data)) {
-            $this->parseDefault(
-                $key,
-                $data[self::DEFAULT_VALUE]
-            );
+        foreach ($elements as $element_key => $element_value) {
+            switch ($element_key) {
+                case $this->required_key:
+                    $this->parseRequired(
+                        $key,
+                        $element_value
+                    );
+                    break;
+                case $this->default_key:
+                    $this->parseDefault(
+                        $key,
+                        $element_value
+                    );
+                    break;
+                default:
+                    if (is_array($element_value)) {
+                        var_dump($element_value);
+                        array_walk($element_value, [$this, 'parseSchema']);
+                    }
+            }
         }
     }
 

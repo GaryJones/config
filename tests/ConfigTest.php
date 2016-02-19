@@ -312,7 +312,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $schema = new ConfigSchema(new Config(__DIR__ . '/fixtures/schema_config_file.php'));
         $this->setExpectedException(
             'BrightNucleus\Exception\UnexpectedValueException',
-            'Error while resolving config options: The required option "negative_integer" is missing.'
+            'Error while resolving config options: The required options "negative_integer", "nested" are missing.'
         );
         new Config([], $schema);
     }
@@ -326,7 +326,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testConfigFileWithDefaults()
     {
         $schema = new ConfigSchema(new Config(__DIR__ . '/fixtures/schema_config_file.php'));
-        $config = new Config(['negative_integer' => -333], $schema);
+        $config = new Config(['negative_integer' => -333, 'nested' => ['level2' => ['level3' => 999]]], $schema);
         $this->assertTrue($config->hasKey('random_string'));
         $this->assertTrue($config->hasKey('positive_integer'));
         $this->assertTrue($config->hasKey('negative_integer'));

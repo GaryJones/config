@@ -14,22 +14,31 @@ namespace BrightNucleus\Core;
 $test_schema = [
 
     'random_string'    => [
-        'default'  => 'default_test_value',
-        'required' => true,
+        '__default'  => 'default_test_value',
+        '__required' => true,
     ],
     'positive_integer' => [
-        'default'  => 99,
-        'required' => 'TRUE',
+        '__default'  => 99,
+        '__required' => 'TRUE',
     ],
     'negative_integer' => [
-        'required' => 'Yes',
+        '__required' => 'Yes',
     ],
     'positive_boolean' => [
-        'default'  => true,
-        'required' => false,
+        '__default'  => true,
+        '__required' => false,
     ],
     'negative_boolean' => [
-        'required' => 'No',
+        '__required' => 'No',
+    ],
+    'nested'           => [
+        '__required' => 'Yes',
+        'level2'   => [
+            '__required' => true,
+            'level3'   => [
+                '__required' => 'TRUE',
+            ],
+        ],
     ],
 
 ];
